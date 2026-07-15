@@ -4376,6 +4376,49 @@
 
       test.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+
+
+    function setupTopicBlocks() {
+      const topics = document.querySelectorAll("details.topic");
+
+      topics.forEach(topic => {
+        const summary = topic.querySelector("summary");
+        if (!summary) return;
+
+        summary.addEventListener("click", event => {
+          event.preventDefault();
+          topic.open = !topic.open;
+        });
+      });
+
+      const documentCards = document.querySelectorAll('a.doc-mini[href^="#topic-"]');
+
+      documentCards.forEach(card => {
+        card.addEventListener("click", event => {
+          const targetSelector = card.getAttribute("href");
+          const targetTopic = targetSelector ? document.querySelector(targetSelector) : null;
+
+          if (!targetTopic) return;
+
+          event.preventDefault();
+          targetTopic.open = true;
+          targetTopic.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+
+      if (window.location.hash) {
+        const hashTopic = document.querySelector(window.location.hash);
+        if (hashTopic && hashTopic.matches("details.topic")) {
+          hashTopic.open = true;
+        }
+      }
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", setupTopicBlocks);
+    } else {
+      setupTopicBlocks();
+    }
   </script>
 </body>
 </html>
